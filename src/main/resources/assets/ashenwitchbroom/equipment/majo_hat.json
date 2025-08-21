@@ -1,0 +1,12 @@
+{
+  "layers": [
+    {
+      "texture": "ashenwitchbroom:majo_hat_layer_1",
+      "dyeable": true
+    },
+    {
+      "texture": "ashenwitchbroom:majo_hat_overlay_layer_1",
+      "dyeable": false
+    }
+  ]
+}

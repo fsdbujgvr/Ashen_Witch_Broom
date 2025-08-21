@@ -1,0 +1,27 @@
+package com.magicbroom.examplemod;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.NotNull;
+
+public class MajoClothArmorRenderer implements IClientItemExtensions {
+    
+    @Override
+    public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+        if (equipmentSlot == EquipmentSlot.CHEST) {
+            MajoClothModel<?> model = new MajoClothModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(MajoClothModel.LAYER_LOCATION));
+            // 复制原始模型的属性以确保动画等效果正确应用
+            model.crouching = original.crouching;
+            model.riding = original.riding;
+            model.young = original.young;
+            model.leftArmPose = original.leftArmPose;
+            model.rightArmPose = original.rightArmPose;
+            return model;
+        }
+        return original;
+    }
+}

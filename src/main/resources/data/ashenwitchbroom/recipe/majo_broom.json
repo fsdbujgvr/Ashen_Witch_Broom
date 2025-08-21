@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " cd",
+    " qe",
+    "q  "
+  ],
+  "key": {
+    "q": {
+      "item": "minecraft:stick"
+    },
+    "c": {
+      "item": "minecraft:phantom_membrane"
+    },
+    "d": {
+      "item": "minecraft:ghast_tear"
+    },
+    "e": {
+      "item": "minecraft:hay_block"
+    }
+  },
+  "result": {
+    "id": "ashenwitchbroom:majo_broom",
+    "count": 1
+  }
+}
