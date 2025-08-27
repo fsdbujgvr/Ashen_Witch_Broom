@@ -1,4 +1,4 @@
-package com.magicbroom.examplemod;
+package com.magicbroom.examplemod.client;
 
 import net.minecraft.client.KeyMapping;
 import net.neoforged.api.distmarker.Dist;
@@ -10,6 +10,8 @@ import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyModifier;
 import com.mojang.blaze3d.platform.InputConstants;
 import org.lwjgl.glfw.GLFW;
+
+import com.magicbroom.examplemod.core.AshenWitchBroom;
 
 /**
  * 键盘输入处理类

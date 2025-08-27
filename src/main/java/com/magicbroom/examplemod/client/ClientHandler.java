@@ -1,4 +1,4 @@
-package com.magicbroom.examplemod;
+package com.magicbroom.examplemod.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.CameraType;
@@ -9,6 +9,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
+
+import com.magicbroom.examplemod.core.AshenWitchBroom;
+import com.magicbroom.examplemod.core.Config;
+import com.magicbroom.examplemod.entity.MajoBroomEntity;
 
 /**
  * 客户端事件处理器

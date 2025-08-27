@@ -1,4 +1,4 @@
-package com.magicbroom.examplemod;
+package com.magicbroom.examplemod.data;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +13,9 @@ import net.minecraft.world.level.Level;
 
 import java.io.File;
 import java.io.IOException;
+
+import com.magicbroom.examplemod.core.AshenWitchBroom;
+import com.magicbroom.examplemod.entity.MajoBroomEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

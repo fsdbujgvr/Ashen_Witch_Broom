@@ -1,4 +1,4 @@
-package com.magicbroom.examplemod;
+package com.magicbroom.examplemod.network;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -8,6 +8,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+
+import com.magicbroom.examplemod.core.AshenWitchBroom;
+import com.magicbroom.examplemod.entity.MajoBroomEntity;
 
 public record RidePack(int eid, boolean ride) implements CustomPacketPayload {
     

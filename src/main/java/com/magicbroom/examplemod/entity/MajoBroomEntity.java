@@ -1,4 +1,4 @@
-package com.magicbroom.examplemod;
+package com.magicbroom.examplemod.entity;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -23,6 +23,14 @@ import net.minecraft.network.protocol.game.ServerboundPaddleBoatPacket;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import java.util.UUID;
+
+import com.magicbroom.examplemod.core.Config;
+
+import com.magicbroom.examplemod.core.AshenWitchBroom;
+import com.magicbroom.examplemod.data.BroomDataManager;
+import com.magicbroom.examplemod.data.BroomData;
+import com.magicbroom.examplemod.network.Networking;
+import com.magicbroom.examplemod.network.RidePack;
 
 /**
  * 魔女扫帚实体类
@@ -427,8 +435,6 @@ public class MajoBroomEntity extends Entity {
             if (Math.abs(currentY) <= 0.03) {
                 currentY = 0;
             }
-            // 在这里加入打印语句
-            // System.out.println("ControlBoat Tick -> Current Y Speed: " + currentY + " | Max Y Speed: " + maxYspeed + " | Y Acceleration: " + yacc + " | Y Deceleration: " + ydec);
             
             // 应用移动
             this.setDeltaMovement(v3d.x, currentY, v3d.z);
@@ -725,15 +731,6 @@ public class MajoBroomEntity extends Entity {
     /**
      * 扫帚不需要浮在水面上，保持空中飞行状态
      */
-    public void floatBoat() {
-        // 应用转向衰减，确保转向响应性
-        if (Math.abs(deltaRotation) > 0.001F) {
-            deltaRotation *= ROTATION_DECAY;
-        } else {
-            deltaRotation = 0.0F; // 完全停止微小的转向
-        }
-    }
-    
     /**
      * 同步玩家视角与扫帚转向
      * 只在客户端执行，使玩家视角跟随扫帚转向
@@ -751,12 +748,5 @@ public class MajoBroomEntity extends Entity {
                 controllingPlayer.yRotO = controllingPlayer.getYRot();
             }
         }
-    }
-    
-    /**
-     * 重置转向状态，用于优化转向响应性
-     */
-    public void resetTurningState() {
-        deltaRotation = 0.0F;
     }
 }

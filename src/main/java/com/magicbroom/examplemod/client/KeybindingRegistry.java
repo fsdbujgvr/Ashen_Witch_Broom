@@ -1,9 +1,11 @@
-package com.magicbroom.examplemod;
+package com.magicbroom.examplemod.client;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+
+import com.magicbroom.examplemod.core.AshenWitchBroom;
 
 /**
  * 按键绑定注册器

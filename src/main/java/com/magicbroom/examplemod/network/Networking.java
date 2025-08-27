@@ -1,9 +1,11 @@
-package com.magicbroom.examplemod;
+package com.magicbroom.examplemod.network;
 
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+
+import com.magicbroom.examplemod.core.AshenWitchBroom;
 
 @EventBusSubscriber(modid = AshenWitchBroom.MODID)
 public class Networking {

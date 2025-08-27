@@ -1,4 +1,4 @@
-package com.magicbroom.examplemod;
+package com.magicbroom.examplemod.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -10,6 +10,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+
+import com.magicbroom.examplemod.core.AshenWitchBroom;
+import com.magicbroom.examplemod.data.BroomDataManager;
+import com.magicbroom.examplemod.entity.MajoBroomEntity;
+import com.magicbroom.examplemod.service.BroomSummonService;
 
 /**
  * 魔女扫帚物品类

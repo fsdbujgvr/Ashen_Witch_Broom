@@ -1,4 +1,4 @@
-package com.magicbroom.examplemod;
+package com.magicbroom.examplemod.item;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
@@ -8,6 +8,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import java.util.function.Consumer;
+
+import com.magicbroom.examplemod.render.MajoHatArmorRenderer;
 
 public class MajoHatItem extends ArmorItem {
     

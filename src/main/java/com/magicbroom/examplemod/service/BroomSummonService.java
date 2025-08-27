@@ -1,4 +1,4 @@
-package com.magicbroom.examplemod;
+package com.magicbroom.examplemod.service;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -9,6 +9,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+
+import com.magicbroom.examplemod.core.AshenWitchBroom;
+import com.magicbroom.examplemod.core.Config;
+import com.magicbroom.examplemod.entity.MajoBroomEntity;
+import com.magicbroom.examplemod.data.BroomDataManager;
+import com.magicbroom.examplemod.data.BroomData;
 
 import java.util.ArrayList;
 import java.util.Comparator;

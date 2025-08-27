@@ -1,14 +1,7 @@
-package com.magicbroom.examplemod;
+package com.magicbroom.examplemod.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Options;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -18,6 +11,17 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+
+import com.magicbroom.examplemod.core.AshenWitchBroom;
+import com.magicbroom.examplemod.entity.MajoBroomEntity;
+import com.magicbroom.examplemod.item.MajoHatItem;
+import com.magicbroom.examplemod.render.MajoBroomEntityRenderer;
+import com.magicbroom.examplemod.model.MajoBroomModel;
+import com.magicbroom.examplemod.model.MajoHatModel;
+import com.magicbroom.examplemod.model.MajoClothModel;
+import com.magicbroom.examplemod.network.Networking;
+import com.magicbroom.examplemod.network.RidePack;
+import com.magicbroom.examplemod.network.SummonBroomPack;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -69,10 +73,6 @@ public class AshenWitchBroomClient {
     }
     
     // 按键注册已移至 KeybindingRegistry.java 中处理，避免重复注册
-    // @SubscribeEvent
-    // public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
-    //     KeyBoardInput.registerKeyMappings(event);
-    // }
     
     @SubscribeEvent
     public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
