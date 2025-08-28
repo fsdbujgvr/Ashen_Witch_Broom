@@ -23,7 +23,7 @@
 
 ## 图片展示
 
-![](img/2025-08-21_18.14.52.png)
+![](img/2025-08-21_19.59.58.jpg)
 
 ![](img/2025-08-21_19.06.55.png)
 
@@ -84,7 +84,7 @@ You can also press the 'R' key to summon the broom. The summoning range can be m
 
 ## Image Showcase
 
-![](img/2025-08-21_18.14.52.png)
+![](img/2025-08-21_19.59.58.jpg)
 
 ![](img/2025-08-21_19.06.55.png)
 
