@@ -21,14 +21,6 @@
 
 按键盘的r键可以进行扫帚召唤，召唤范围请在配置里面修改。
 
-## 图片展示
-
-![](img/2025-08-21_19.59.58.jpg)
-
-![](img/2025-08-21_19.06.55.png)
-
-![](img/2025-08-21_19.14.59.png)
-
 ## 模组设置界面
 
 扫帚的所有设置可以在：【设置→模组→ Ashen Witch Broom→配置】进行设置。
@@ -52,10 +44,19 @@ player为人物，不填写默认自己，填写别人需要op权限。
 |/broom cleanup [player]|扫帚清理命令，批量验证并清理无效的扫帚记录|![](img/2025-08-29_022332.png)|
 |/broom help|帮助命令|![](img/2025-08-29_022231.png)|
 
+## 图片展示
+
+![](img/2025-08-21_19.59.58.jpg)
+
+![](img/2025-08-21_19.06.55.png)
+
+![](img/2025-08-21_19.14.59.png)
+
 ## 外部相关链接
+
 Modrinth：https://modrinth.com/mod/ashen-witch-broom
 
-MC百科：
+MC百科：https://www.mcmod.cn/class/21739.html
 
 ***
 
@@ -82,14 +83,6 @@ Right-click the ground to summon the broom. Sneak and left-click to retrieve it.
 
 You can also press the 'R' key to summon the broom. The summoning range can be modified in the config.
 
-## Image Showcase
-
-![](img/2025-08-21_19.59.58.jpg)
-
-![](img/2025-08-21_19.06.55.png)
-
-![](img/2025-08-21_19.14.59.png)
-
 ## Mod Config Menu
 
 All broom settings can be configured via: **Options... → Mods → Ashen Witch Broom → Config**.
@@ -113,7 +106,16 @@ If `[player]` is not specified, it defaults to yourself. Operator permissions ar
 |/broom cleanup [player]|Broom cleanup command. Batch validates and removes invalid broom records.|![](img/2025-08-29_021548.png)|
 |/broom help|Help command.|![](img/2025-08-29_021517.png)|
 
+## Image Showcase
+
+![](img/2025-08-21_19.59.58.jpg)
+
+![](img/2025-08-21_19.06.55.png)
+
+![](img/2025-08-21_19.14.59.png)
+
 ## External Links
+
 Modrinth: https://modrinth.com/mod/ashen-witch-broom
 
-MC百科:
+MC百科: https://www.mcmod.cn/class/21739.html
