@@ -33,9 +33,9 @@
 
 扫帚的所有设置可以在：【设置→模组→ Ashen Witch Broom→配置】进行设置。
 
-![](img/2025-08-28 152645.png)
+![](img/2025-08-28_152645.png)
 
-![](img/2025-08-21 174821.png)
+![](img/2025-08-21_174821.png)
 
 ## 模组提供的指令
 
@@ -47,10 +47,10 @@ player为人物，不填写默认自己，填写别人需要op权限。
 
 |指令|功能|示例|
 | :- | :- | :- |
-|/broom detect [player]|扫帚检测命令，能显示所有存储的扫帚详细信息|![](img/2025-08-29 022256.png)|
-|/broom stats [player]|扫帚统计命令，显示扫帚统计信息|![](img/2025-08-29 022207.png)|
-|/broom cleanup [player]|扫帚清理命令，批量验证并清理无效的扫帚记录|![](img/2025-08-29 022332.png)|
-|/broom help|帮助命令|![](img/2025-08-29 022231.png)|
+|/broom detect [player]|扫帚检测命令，能显示所有存储的扫帚详细信息|![](img/2025-08-29_022256.png)|
+|/broom stats [player]|扫帚统计命令，显示扫帚统计信息|![](img/2025-08-29_022207.png)|
+|/broom cleanup [player]|扫帚清理命令，批量验证并清理无效的扫帚记录|![](img/2025-08-29_022332.png)|
+|/broom help|帮助命令|![](img/2025-08-29_022231.png)|
 
 ## 外部相关链接
 Modrinth：https://modrinth.com/mod/ashen-witch-broom
@@ -94,9 +94,9 @@ You can also press the 'R' key to summon the broom. The summoning range can be m
 
 All broom settings can be configured via: **Options... → Mods → Ashen Witch Broom → Config**.
 
-![](img/2025-08-28 154546.png)
+![](img/2025-08-28_154546.png)
 
-![](img/2025-08-28 154623.png)
+![](img/2025-08-28_154623.png)
 
 ## Mod Commands
 
@@ -108,10 +108,10 @@ If `[player]` is not specified, it defaults to yourself. Operator permissions ar
 
 |Command|Function|Example|
 | :--- | :--- | :--- |
-|/broom detect [player]|Broom detection command. Displays detailed information for all stored brooms.|![](img/2025-08-29 021431.png)|
-|/broom stats [player]|Broom statistics command. Displays broom stats.|![](img/2025-08-29 021457.png)|
-|/broom cleanup [player]|Broom cleanup command. Batch validates and removes invalid broom records.|![](img/2025-08-29 021548.png)|
-|/broom help|Help command.|![](img/2025-08-29 021517.png)|
+|/broom detect [player]|Broom detection command. Displays detailed information for all stored brooms.|![](img/2025-08-29_021431.png)|
+|/broom stats [player]|Broom statistics command. Displays broom stats.|![](img/2025-08-29_021457.png)|
+|/broom cleanup [player]|Broom cleanup command. Batch validates and removes invalid broom records.|![](img/2025-08-29_021548.png)|
+|/broom help|Help command.|![](img/2025-08-29_021517.png)|
 
 ## External Links
 Modrinth: https://modrinth.com/mod/ashen-witch-broom
