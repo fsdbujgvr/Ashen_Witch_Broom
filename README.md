@@ -116,6 +116,8 @@ If `[player]` is not specified, it defaults to yourself. Operator permissions ar
 
 ## External Links
 
-Modrinth：https://modrinth.com/mod/ashen-witch-broom
+Modrinth：[https://modrinth.com/mod/ashen-witch-broom](https://modrinth.com/mod/ashen-witch-broom)
 
-MC百科：https://www.mcmod.cn/class/21739.html
+CurseForge：[https://legacy.curseforge.com/minecraft/mc-mods/ashen-witch-broom](https://legacy.curseforge.com/minecraft/mc-mods/ashen-witch-broom)
+
+MC百科：[https://www.mcmod.cn/class/21739.html](https://www.mcmod.cn/class/21739.html)
