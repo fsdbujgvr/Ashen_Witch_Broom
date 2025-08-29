@@ -25,9 +25,9 @@
 
 扫帚的所有设置可以在：【设置→模组→ Ashen Witch Broom→配置】进行设置。
 
-![](img/2025-08-28_152645.png)
-
-![](img/2025-08-21_174821.png)
+| 配置界面 | 扫帚模式 |
+|:---:|:---:|
+| <img src="img/2025-08-28_152645.png" width="500"> | <img src="img/2025-08-21_174821.png" width="300"> |
 
 ## 模组提供的指令
 
@@ -37,26 +37,30 @@ mod还为扫帚添加了多项管理指令，能管理您和您好友的扫帚�
 
 player为人物，不填写默认自己，填写别人需要op权限。
 
-|指令|功能|示例|
-| :- | :- | :- |
-|/broom detect [player]|扫帚检测命令，能显示所有存储的扫帚详细信息|![](img/2025-08-29_022256.png)|
-|/broom stats [player]|扫帚统计命令，显示扫帚统计信息|![](img/2025-08-29_022207.png)|
-|/broom cleanup [player]|扫帚清理命令，批量验证并清理无效的扫帚记录|![](img/2025-08-29_022332.png)|
-|/broom help|帮助命令|![](img/2025-08-29_022231.png)|
+| 指令 | 功能 | 示例 |
+| :--- | :--- | :--- |
+| /broom detect [player] | 扫帚检测命令，能显示所有存储的扫帚详细信息 | <img src="img/2025-08-29_022256.png" width="100%"> |
+| /broom stats [player] | 扫帚统计命令，显示扫帚统计信息 | <img src="img/2025-08-29_022207.png" width="100%"> |
+| /broom cleanup [player] | 扫帚清理命令，批量验证并清理无效的扫帚记录 | <img src="img/2025-08-29_022332.png" width="100%"> |
+| /broom help | 帮助命令 | <img src="img/2025-08-29_022231.png" width="100%"> |
 
 ## 图片展示
 
-![](img/2025-08-21_19.59.58.jpg)
+<img src="img/2025-08-21_19.59.58.jpg" width="800">
 
-![](img/2025-08-21_19.06.55.png)
+<img src="img/2025-08-21_19.06.55.png" width="800">
 
-![](img/2025-08-21_19.14.59.png)
+<img src="img/2025-08-21_19.14.59.png" width="800">
 
 ## 外部相关链接
 
-Modrinth：https://modrinth.com/mod/ashen-witch-broom
+MC百科：[https://www.mcmod.cn/class/21739.html](https://www.mcmod.cn/class/21739.html)
 
-MC百科：https://www.mcmod.cn/class/21739.html
+GitHub：[https://modrinth.com/mod/ashen-witch-broom](https://github.com/fsdbujgvr/Ashen_Witch_Broom)
+
+CurseForge：[https://legacy.curseforge.com/minecraft/mc-mods/ashen-witch-broom](https://legacy.curseforge.com/minecraft/mc-mods/ashen-witch-broom)
+
+Modrinth：[https://modrinth.com/mod/ashen-witch-broom](https://modrinth.com/mod/ashen-witch-broom)
 
 ***
 
@@ -87,9 +91,9 @@ You can also press the 'R' key to summon the broom. The summoning range can be m
 
 All broom settings can be configured via: **Options... → Mods → Ashen Witch Broom → Config**.
 
-![](img/2025-08-28_154546.png)
-
-![](img/2025-08-28_154623.png)
+| Configuration | Broom mode |
+|:---:|:---:|
+| <img src="img/2025-08-28_154546.png" width="500"> | <img src="img/2025-08-28_154623.png" width="300"> |
 
 ## Mod Commands
 
@@ -99,25 +103,27 @@ Note: `/broom detect [player]`
 
 If `[player]` is not specified, it defaults to yourself. Operator permissions are required to target other players.
 
-|Command|Function|Example|
+| Command | Function | Example |
 | :--- | :--- | :--- |
-|/broom detect [player]|Broom detection command. Displays detailed information for all stored brooms.|![](img/2025-08-29_021431.png)|
-|/broom stats [player]|Broom statistics command. Displays broom stats.|![](img/2025-08-29_021457.png)|
-|/broom cleanup [player]|Broom cleanup command. Batch validates and removes invalid broom records.|![](img/2025-08-29_021548.png)|
-|/broom help|Help command.|![](img/2025-08-29_021517.png)|
+| /broom detect [player] | Broom detection command. Displays detailed information for all stored brooms. | <img src="img/2025-08-29_021431.png" width="100%"> |
+| /broom stats [player] | Broom statistics command. Displays broom stats. | <img src="img/2025-08-29_021457.png" width="100%"> |
+| /broom cleanup [player] | Broom cleanup command. Batch validates and removes invalid broom records. | <img src="img/2025-08-29_021548.png" width="100%"> |
+| /broom help | Help command. | <img src="img/2025-08-29_021517.png" width="100%"> |
 
 ## Image Showcase
 
-![](img/2025-08-21_19.59.58.jpg)
+<img src="img/2025-08-21_19.59.58.jpg" width="800">
 
-![](img/2025-08-21_19.06.55.png)
+<img src="img/2025-08-21_19.06.55.png" width="800">
 
-![](img/2025-08-21_19.14.59.png)
+<img src="img/2025-08-21_19.14.59.png" width="800">
 
 ## External Links
 
-Modrinth：[https://modrinth.com/mod/ashen-witch-broom](https://modrinth.com/mod/ashen-witch-broom)
+GitHub：[https://modrinth.com/mod/ashen-witch-broom](https://github.com/fsdbujgvr/Ashen_Witch_Broom)
 
 CurseForge：[https://legacy.curseforge.com/minecraft/mc-mods/ashen-witch-broom](https://legacy.curseforge.com/minecraft/mc-mods/ashen-witch-broom)
+
+Modrinth：[https://modrinth.com/mod/ashen-witch-broom](https://modrinth.com/mod/ashen-witch-broom)
 
 MC百科：[https://www.mcmod.cn/class/21739.html](https://www.mcmod.cn/class/21739.html)
