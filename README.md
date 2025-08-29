@@ -56,7 +56,7 @@ player为人物，不填写默认自己，填写别人需要op权限。
 
 MC百科：[https://www.mcmod.cn/class/21739.html](https://www.mcmod.cn/class/21739.html)
 
-GitHub：[https://modrinth.com/mod/ashen-witch-broom](https://github.com/fsdbujgvr/Ashen_Witch_Broom)
+GitHub：[https://github.com/fsdbujgvr/Ashen_Witch_Broom](https://github.com/fsdbujgvr/Ashen_Witch_Broom)
 
 CurseForge：[https://legacy.curseforge.com/minecraft/mc-mods/ashen-witch-broom](https://legacy.curseforge.com/minecraft/mc-mods/ashen-witch-broom)
 
@@ -120,10 +120,10 @@ If `[player]` is not specified, it defaults to yourself. Operator permissions ar
 
 ## External Links
 
-GitHub：[https://modrinth.com/mod/ashen-witch-broom](https://github.com/fsdbujgvr/Ashen_Witch_Broom)
+MC百科：[https://www.mcmod.cn/class/21739.html](https://www.mcmod.cn/class/21739.html)
+
+GitHub：[https://github.com/fsdbujgvr/Ashen_Witch_Broom](https://github.com/fsdbujgvr/Ashen_Witch_Broom)
 
 CurseForge：[https://legacy.curseforge.com/minecraft/mc-mods/ashen-witch-broom](https://legacy.curseforge.com/minecraft/mc-mods/ashen-witch-broom)
 
 Modrinth：[https://modrinth.com/mod/ashen-witch-broom](https://modrinth.com/mod/ashen-witch-broom)
-
-MC百科：[https://www.mcmod.cn/class/21739.html](https://www.mcmod.cn/class/21739.html)
