@@ -90,9 +90,10 @@ public class KeyBoardInput {
         // 处理召唤键
         if (SUMMON_KEY.getKey().getValue() == event.getKey()) {
             if (event.getAction() == GLFW.GLFW_PRESS){
-                // 发送召唤扫帚网络包
+                // 检查是否处于默认游玩状态（非任何界面或菜单）
                 var minecraft = net.minecraft.client.Minecraft.getInstance();
-                if (minecraft.player != null) {
+                if (minecraft.player != null && minecraft.screen == null) {
+                    // 仅在没有打开任何界面时才允许召唤扫帚
                     var pos = minecraft.player.position();
                     AshenWitchBroomClient.sendSummonBroomPacket(pos.x, pos.y, pos.z);
                 }

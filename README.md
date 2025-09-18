@@ -67,7 +67,7 @@ Modrinth：[https://modrinth.com/mod/ashen-witch-broom](https://modrinth.com/mod
 # English Version
 
 ## Introduction
-This mod is an unofficial, refactored remake of the "Witch's Broom" mod.
+This mod is an unofficial, refactored remake of the "Majo's broom" mod.
 
 The broom has been epically enhanced (how fast it goes is up to you).
 
