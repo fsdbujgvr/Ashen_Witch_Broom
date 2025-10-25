@@ -28,7 +28,7 @@
 
 | 帽子 | 衣服 | 扫帚 |
 |:---:|:---:|:---:|
-| <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761377527058\_peifang\_maozi.png" width="500"> | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761377413005\_peifang\_yifu.png" width="500"> | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761377548296\_peifang\_saozhou.png" width="500"> |
+| <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761377527058_peifang_maozi.png" width="500"> | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761377413005_peifang_yifu.png" width="500"> | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761377548296_peifang_saozhou.png" width="500"> |
 
 ## 模组设置界面
 
@@ -36,7 +36,7 @@
 
 | 配置界面 | 扫帚模式 |
 |:---:|:---:|
-| <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761377128970\_peizhi\_zh.png" width="500"> | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761380773766\_peizhi\_saozhou\_zh.png" width="300"> |
+| <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761377128970_peizhi_zh.png" width="500"> | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761380773766_peizhi_saozhou_zh.png" width="300"> |
 
 ## 模组提供的指令
 
@@ -48,10 +48,10 @@
 
 | 指令 | 功能 | 示例 |
 |:---:|:---:|:---:|
-| `/broom detect [player]` | 扫帚检测命令，能显示所有存储的扫帚详细信息 | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761376910778\_broom\_detect\_zh.png" width="100%"> |
-| `/broom stats [player]` | 扫帚统计命令，显示扫帚统计信息 | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761376927435\_broom\_stats\_zh.png" width="100%"> |
-| `/broom cleanup [player]` | 扫帚清理命令，批量验证并清理无效的扫帚记录 | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761376954399\_broom\_cleanup\_zh.png" width="100%"> |
-| `/broom help` | 帮助命令 | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761376967375\_broom\_help\_zh.png" width="100%"> |
+| `/broom detect [player]` | 扫帚检测命令，能显示所有存储的扫帚详细信息 | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761376910778_broom_detect_zh.png" width="100%"> |
+| `/broom stats [player]` | 扫帚统计命令，显示扫帚统计信息 | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761376927435_broom_stats_zh.png" width="100%"> |
+| `/broom cleanup [player]` | 扫帚清理命令，批量验证并清理无效的扫帚记录 | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761376954399_broom_cleanup_zh.png" width="100%"> |
+| `/broom help` | 帮助命令 | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761376967375_broom_help_zh.png" width="100%"> |
 
 \###区块加载指令说明：`/broom chunks add lazy x y w h`
 
@@ -80,11 +80,11 @@
 
 ## 图片展示
 
-<img src="https://cloudflare-imgbed-1t7.pages.dev/file/1756578395185\\\_2025-08-21\\\_19.59.58.jpg" width="800">
+<img src="https://cloudflare-imgbed-1t7.pages.dev/file/1756578395185_2025-08-21_19.59.58.jpg" width="800">
 
-<img src="https://cloudflare-imgbed-1t7.pages.dev/file/1756578617167\\\_2025-08-21\\\_19.06.55.png" width="800">
+<img src="https://cloudflare-imgbed-1t7.pages.dev/file/1756578617167_2025-08-21_19.06.55.png" width="800">
 
-<img src="https://cloudflare-imgbed-1t7.pages.dev/file/1756578623943\\\_2025-08-21\\\_19.14.59.png" width="800">
+<img src="https://cloudflare-imgbed-1t7.pages.dev/file/1756578623943_2025-08-21_19.14.59.png" width="800">
 
 ## 外部相关链接
 
