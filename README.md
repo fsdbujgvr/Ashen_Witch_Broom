@@ -4,11 +4,11 @@
 
 因为实在是太想在1.21.1里面成为魔女，所以此模组日夜兼程的诞生了。
 
-模组为【魔女的扫帚】非官方重制版，对素材进行了沿用，代码部分直接重写。
+模组为【魔女的扫帚】非官方重制版，对素材进行了沿用，代码部分进行重构。
 
 将扫帚史诗级加强（扫帚多快全靠自觉啊），扫帚全维度可召唤，详细配置请自行设置。
 
-还添加了区块加载指令，通过指令能长时间加载强区块或弱区块，并进行管理。
+还添加了区块加载指令，通过指令能长时间加载强区块和弱区块，并进行管理。
 
 ## 添加的物品
 
@@ -104,7 +104,7 @@ Modrinth：[https://modrinth.com/mod/ashen-witch-broom](https://modrinth.com/mod
 
 This mod was born from a burning desire to become a witch in Minecraft 1.21.1, forged through sleepless nights of coding.
 
-This is an unofficial remake of the **[Witch's Broom]** mod. While it reuses the original assets, all the code has been rewritten from scratch.
+This is an unofficial remake of the **[Witch's Broom]** mod. While it reuses the original assets, the code has been refactored from the ground up.
 
 The broom has been epically buffed (how fast you fly is only limited by your conscience!), can be summoned in any dimension, and is fully configurable to your liking.
 
