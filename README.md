@@ -55,7 +55,7 @@
 
 \###区块加载指令说明：`/broom chunks add lazy x y w h`
 
-`x``y`为区块坐标，和大地坐标不相同。区块坐标为【传统认为的坐标➗16】。`x``y`为必填。`w``h`为选填，如果不填写默认指定`x``y`的单个区块。
+`x``y`为区块坐标，和大地坐标不相同。区块坐标为【传统认为的坐标÷16】。`x``y`为必填。`w``h`为选填，如果不填写默认指定`x``y`的单个区块。
 
 运行此命令及其子命令都必须有op权限。
 
@@ -148,7 +148,7 @@ All settings for the broom can be found in-game via:
 
 The mod provides commands for managing your broom and for force-loading chunks.
 
-### Broom Command Usage: `/broom detect \\[player]`
+### Broom Command Usage: `/broom detect [player]`
 
 `player` is the target player. If omitted, it defaults to yourself. Targeting other players requires OP permissions.
 
@@ -161,7 +161,7 @@ The mod provides commands for managing your broom and for force-loading chunks.
 
 ### Chunk Loading Command Usage: `/broom chunks add lazy <x> <z> [width] [height]`
 
-`x` and `z` are the chunk coordinates (not block coordinates, which are `block_coordinate / 16`). `x` and `z` are required. `w` (width) and `h` (height) are optional; if omitted, only the single chunk at `x, z` will be targeted.
+`x` and `z` are the chunk coordinates (not block coordinates, which are `block_coordinate ÷ 16`). `x` and `z` are required. `w` (width) and `h` (height) are optional; if omitted, only the single chunk at `x, z` will be targeted.
 
 Running this command and its subcommands requires OP permissions.
 
