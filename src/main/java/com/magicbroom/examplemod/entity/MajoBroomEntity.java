@@ -29,8 +29,9 @@ import com.magicbroom.examplemod.core.Config;
 import com.magicbroom.examplemod.core.AshenWitchBroom;
 import com.magicbroom.examplemod.data.BroomDataManager;
 import com.magicbroom.examplemod.data.BroomData;
-import com.magicbroom.examplemod.network.Networking;
-import com.magicbroom.examplemod.network.RidePack;
+
+import com.magicbroom.examplemod.network.BroomMountPackets;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * 魔女扫帚实体类
@@ -105,6 +106,12 @@ public class MajoBroomEntity extends Entity {
     
     // 位置更新计数器，用于控制写入频率（每5tick写入一次）
     private int positionUpdateCounter = 0;
+    
+    // 位置插值相关变量（用于其他玩家的扫帚）
+    private double lerpX, lerpY, lerpZ;
+    private float lerpYRot, lerpXRot;
+    private int lerpSteps;
+    private boolean hasLerpTarget = false;
     
     // 设置扫帚信息
     public void setBroomInfo(String broomName, UUID ownerUUID) {
@@ -211,6 +218,51 @@ public class MajoBroomEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
+        
+        // 处理位置插值（用于其他玩家的扫帚）
+        if (this.level().isClientSide && this.hasLerpTarget && this.lerpSteps > 0) {
+            // 计算插值进度 - 基于帧而不是tick
+            double lerpProgress = 1.0 / this.lerpSteps;
+            
+            // 获取当前位置
+            double currentX = this.getX();
+            double currentY = this.getY();
+            double currentZ = this.getZ();
+            float currentYRot = this.getYRot();
+            float currentXRot = this.getXRot();
+            
+            // 计算插值后的位置
+            double newX = currentX + (this.lerpX - currentX) * lerpProgress;
+            double newY = currentY + (this.lerpY - currentY) * lerpProgress;
+            double newZ = currentZ + (this.lerpZ - currentZ) * lerpProgress;
+            
+            // 修复旋转插值 - 处理角度差值，避免360度跳跃
+            float yRotDiff = this.lerpYRot - currentYRot;
+            float xRotDiff = this.lerpXRot - currentXRot;
+            
+            // 标准化角度差值到[-180, 180]范围内
+            while (yRotDiff > 180.0F) yRotDiff -= 360.0F;
+            while (yRotDiff < -180.0F) yRotDiff += 360.0F;
+            while (xRotDiff > 180.0F) xRotDiff -= 360.0F;
+            while (xRotDiff < -180.0F) xRotDiff += 360.0F;
+            
+            // 应用插值旋转
+            float newYRot = currentYRot + yRotDiff * (float)lerpProgress;
+            float newXRot = currentXRot + xRotDiff * (float)lerpProgress;
+            
+            // 应用插值位置和旋转
+            this.setPos(newX, newY, newZ);
+            this.setYRot(newYRot);
+            this.setXRot(newXRot);
+            
+            // 减少插值步数
+            this.lerpSteps--;
+            
+            // 如果插值完成，重置标志
+            if (this.lerpSteps <= 0) {
+                this.hasLerpTarget = false;
+            }
+        }
         
         // 检查是否由本地实例控制（关键的控制逻辑）
         if (this.isControlledByLocalInstance()) {
@@ -466,30 +518,45 @@ public class MajoBroomEntity extends Entity {
             // 检查玩家是否潜行
             if (player.isShiftKeyDown()) {
                 // 删除扫帚数据（如果有的话）
-                if (this.broomName != null && this.ownerUUID != null && this.ownerUUID.equals(player.getUUID())) {
+                if (this.broomName != null && this.ownerUUID != null) {
+                    // 检查是否为扫帚拥有者
+                    boolean isOwner = this.ownerUUID.equals(player.getUUID());
+                    String ownerName = "未知玩家";
+                    
+                    if (!isOwner) {
+                        // 不是拥有者，发送聊天提醒
+                        net.minecraft.server.level.ServerPlayer ownerPlayer = ((net.minecraft.server.level.ServerLevel) this.level()).getServer().getPlayerList().getPlayer(this.ownerUUID);
+                        if (ownerPlayer != null) {
+                            ownerName = ownerPlayer.getName().getString();
+                        }
+                        
+                        player.sendSystemMessage(net.minecraft.network.chat.Component.translatable(
+                            "message.ashenwitchbroom.collecting_others_broom", ownerName, this.broomName));
+                    } else {
+                        // 是拥有者，获取拥有者名称用于日志
+                        ownerName = player.getName().getString();
+                    }
+                    
                     // 验证实体UUID匹配（如果不匹配会自动删除过期数据）
                     boolean isValid = BroomDataManager.validateBroomEntityUUID((net.minecraft.server.level.ServerLevel) this.level(), 
                         this.ownerUUID, this.broomName, this.getUUID());
                     
                     if (isValid) {
+                        // 从原拥有者的记录中删除扫帚
                         BroomDataManager.removeBroom((net.minecraft.server.level.ServerLevel) this.level(), 
                             this.ownerUUID, this.broomName);
                         
                         player.sendSystemMessage(net.minecraft.network.chat.Component.translatable(
                             "message.ashenwitchbroom.broom_collected", this.broomName));
                         
-                        AshenWitchBroom.LOGGER.info("Player {} collected broom '{}' at {}", 
-                            player.getName().getString(), this.broomName, this.blockPosition());
+                        AshenWitchBroom.WRAPPED_LOGGER.debug("玩家 {} 在位置 {} 收集了扫帚 '{}' (拥有者: {})", 
+                            player.getName().getString(), this.blockPosition(), this.broomName, 
+                            isOwner ? "自己" : ownerName);
                     } else {
                         player.sendSystemMessage(net.minecraft.network.chat.Component.translatable(
                             "message.ashenwitchbroom.broom_data_mismatch"));
-                        AshenWitchBroom.LOGGER.warn("UUID validation failed when collecting broom '{}', data already cleaned up", this.broomName);
+                        AshenWitchBroom.WRAPPED_LOGGER.warn("收集扫帚 '{}' 时UUID验证失败，数据已清理", this.broomName);
                     }
-                } else if (this.broomName != null && this.ownerUUID != null && !this.ownerUUID.equals(player.getUUID())) {
-                    // 不是拥有者，无法收回
-                    player.sendSystemMessage(net.minecraft.network.chat.Component.translatable(
-                        "message.ashenwitchbroom.not_owner"));
-                    return false;
                 }
                 
                 // 创建扫帚物品
@@ -532,19 +599,19 @@ public class MajoBroomEntity extends Entity {
             return InteractionResult.PASS; // 如果潜行，则不处理骑乘，直接返回PASS
         }
 
-        // 如果玩家没有潜行，我们就在服务端执行骑乘/下马逻辑
-        if (!this.level().isClientSide) {
-            if (!this.isVehicle()) {
-                // 让玩家骑乘扫帚
-                player.startRiding(this);
-            } else {
-                // 如果已经有乘客，让当前乘客下来
-                this.ejectPassengers();
-                // 下扫帚时立即同步更新位置数据，确保验证时数据准确
-                if (this.broomName != null && this.ownerUUID != null) {
-                    updateBroomPositionSync();
-                }
-            }
+        // 新的逻辑：客户端发送请求，服务端不直接执行
+        if (this.level().isClientSide) {
+            // 客户端：发送上下马请求到服务端
+            boolean mountRequest = !player.isPassenger(); // 如果玩家不在骑乘状态，则请求上马；否则请求下马
+            
+            AshenWitchBroom.WRAPPED_LOGGER.debug("客户端发送{}请求：玩家 {} 对扫帚 {} (ID: {})", 
+                mountRequest ? "上马" : "下马", 
+                player.getName().getString(), 
+                this.getBroomName(), 
+                this.getId());
+            
+            BroomMountPackets.BroomMountRequestPack packet = new BroomMountPackets.BroomMountRequestPack(this.getId(), mountRequest);
+            PacketDistributor.sendToServer(packet);
         }
         
         // 关键：无论在客户端还是服务端，只要玩家没有潜行，都返回SUCCESS
@@ -562,7 +629,7 @@ public class MajoBroomEntity extends Entity {
         // 下扫帚时立即同步更新位置数据，确保验证时数据准确
         if (!this.level().isClientSide && this.broomName != null && this.ownerUUID != null) {
             updateBroomPositionSync();
-            AshenWitchBroom.LOGGER.debug("Player {} dismounted broom '{}', position synced", 
+            AshenWitchBroom.WRAPPED_LOGGER.debug("玩家 {} 下了扫帚 '{}'，位置已同步", 
                 passenger.getName().getString(), this.broomName);
         }
     }
@@ -576,7 +643,7 @@ public class MajoBroomEntity extends Entity {
             try {
                 this.ownerUUID = UUID.fromString(compound.getString("OwnerUUID"));
             } catch (IllegalArgumentException e) {
-                AshenWitchBroom.LOGGER.warn("Invalid owner UUID in broom data: {}", compound.getString("OwnerUUID"));
+                AshenWitchBroom.WRAPPED_LOGGER.warn("Invalid owner UUID in broom data: {}", compound.getString("OwnerUUID"));
             }
         }
     }
@@ -620,9 +687,21 @@ public class MajoBroomEntity extends Entity {
     
     /**
      * 检查是否由本地实例控制
+     * 只有在客户端且本地玩家是控制乘客时才返回true
      */
     public boolean isControlledByLocalInstance() {
-        return this.isVehicle() && this.getControllingPassenger() != null;
+        if (!this.level().isClientSide) {
+            return false; // 服务端永远不是本地实例
+        }
+        
+        Entity controllingPassenger = this.getControllingPassenger();
+        if (controllingPassenger == null) {
+            return false; // 没有控制乘客
+        }
+        
+        // 检查控制乘客是否是本地玩家
+        Minecraft mc = Minecraft.getInstance();
+        return controllingPassenger == mc.player;
     }
     
     /**
@@ -668,13 +747,13 @@ public class MajoBroomEntity extends Entity {
     /**
      * 同步更新扫帚在数据文件中的位置（用于关键时刻，确保数据一致性）
      */
-    private void updateBroomPositionSync() {
+    public void updateBroomPositionSync() {
         if (this.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
             net.minecraft.core.BlockPos currentPos = this.blockPosition();
             BroomDataManager.updateBroom(serverLevel, this.ownerUUID, this.broomName, 
                 this.level().dimension(), currentPos, this.getUUID());
             
-            AshenWitchBroom.LOGGER.debug("Sync updated broom '{}' position to {} in {}", 
+            AshenWitchBroom.WRAPPED_LOGGER.debug("同步更新扫帚 '{}' 位置到 {} 在维度 {}", 
                 this.broomName, currentPos, this.level().dimension().location());
         }
     }
@@ -712,10 +791,10 @@ public class MajoBroomEntity extends Entity {
                 BroomDataManager.removeBroom((net.minecraft.server.level.ServerLevel) this.level(), 
                     this.ownerUUID, this.broomName);
                 
-                AshenWitchBroom.LOGGER.info("Broom '{}' owned by {} was removed due to: {}", 
-                    this.broomName, this.ownerUUID, reason);
+                AshenWitchBroom.WRAPPED_LOGGER.debug("拥有者为 {} 的扫帚 '{}' 因 {} 被移除", 
+                    this.ownerUUID, this.broomName, reason);
             } else {
-                AshenWitchBroom.LOGGER.warn("UUID validation failed when removing broom '{}', data already cleaned up", 
+                AshenWitchBroom.WRAPPED_LOGGER.warn("移除扫帚 '{}' 时UUID验证失败，数据已清理", 
                     this.broomName);
             }
         }
@@ -726,6 +805,31 @@ public class MajoBroomEntity extends Entity {
     @Override
     public boolean canBeCollidedWith() {
         return true; // 可以碰撞
+    }
+    
+    /**
+     * 禁用位置插值（lerpTo）功能
+     * 这可以防止客户端对扫帚位置进行平滑插值，确保位置更新的即时性
+     */
+    /**
+     * 位置插值方法 - 只对非当前用户骑行的扫帚执行插值
+     * 当前用户骑行的扫帚不执行插值，其他扫帚执行插值以实现平滑移动
+     */
+    @Override
+    public void lerpTo(double x, double y, double z, float yRot, float xRot, int steps) {
+        // 如果是当前用户骑行的扫帚，不执行插值
+        if (this.isControlledByLocalInstance()) {
+            return;
+        }
+        
+        // 对于其他扫帚，存储插值目标
+        this.lerpX = x;
+        this.lerpY = y;
+        this.lerpZ = z;
+        this.lerpYRot = yRot;
+        this.lerpXRot = xRot;
+        this.lerpSteps = steps;
+        this.hasLerpTarget = true;
     }
     
     /**

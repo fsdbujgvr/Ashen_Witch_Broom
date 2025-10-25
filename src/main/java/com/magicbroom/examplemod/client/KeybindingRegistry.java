@@ -24,6 +24,6 @@ public class KeybindingRegistry {
             event.register(keyMapping);
         }
         
-        AshenWitchBroom.LOGGER.info("Registered {} key mappings for Ashen Witch Broom", KeyBoardInput.getKeyMappings().length);
+        AshenWitchBroom.WRAPPED_LOGGER.debug("为Ashen Witch Broom注册了 {} 个按键映射", KeyBoardInput.getKeyMappings().length);
     }
 }

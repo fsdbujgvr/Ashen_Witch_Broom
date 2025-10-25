@@ -9,10 +9,13 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
+import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import com.magicbroom.examplemod.core.AshenWitchBroom;
 import com.magicbroom.examplemod.core.Config;
 import com.magicbroom.examplemod.entity.MajoBroomEntity;
+import com.magicbroom.examplemod.network.BroomMountPackets;
 
 /**
  * 客户端事件处理器
@@ -151,6 +154,41 @@ public class ClientHandler {
             if (Config.ADVANCED_MODE.get() && previousCameraType != null) {
                 mc.options.setCameraType(previousCameraType);
                 previousCameraType = null;
+            }
+        }
+    }
+    
+    /**
+     * 拦截shift键输入，防止在骑乘扫帚时调用MC原生下马逻辑
+     */
+    @SubscribeEvent
+    public static void onMovementInputUpdate(MovementInputUpdateEvent event) {
+        Player player = event.getEntity();
+        if (player == null || !player.level().isClientSide) {
+            return;
+        }
+        
+        // 检查玩家是否在骑乘扫帚
+        if (player.getVehicle() instanceof MajoBroomEntity broomEntity) {
+            // 如果玩家按下shift键，拦截原生下马行为
+            if (event.getInput().shiftKeyDown) {
+                AshenWitchBroom.WRAPPED_LOGGER.debug("客户端拦截shift键下马，发送自定义下马请求：玩家 {} 从扫帚 {} (ID: {})", 
+                    player.getName().getString(), 
+                    broomEntity.getBroomName(), 
+                    broomEntity.getId());
+                
+                // 立即停止扫帚移动并清零动量
+                broomEntity.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+                
+                // 清空所有输入状态，防止继续移动
+                broomEntity.updatePlayerInput(0.0F, 0.0F, false, false, false, false, false, false);
+                
+                // 阻止原生下马行为
+                event.getInput().shiftKeyDown = false;
+                
+                // 发送自定义下马请求
+                BroomMountPackets.BroomMountRequestPack packet = new BroomMountPackets.BroomMountRequestPack(broomEntity.getId(), false);
+                PacketDistributor.sendToServer(packet);
             }
         }
     }

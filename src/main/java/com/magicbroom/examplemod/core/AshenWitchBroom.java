@@ -31,6 +31,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -42,14 +43,19 @@ import com.magicbroom.examplemod.item.MajoBroomItem;
 import com.magicbroom.examplemod.entity.MajoBroomEntity;
 import com.magicbroom.examplemod.command.BroomCommand;
 import com.magicbroom.examplemod.core.Config;
+import com.magicbroom.examplemod.chunk.ChunkLoadingManager;
+import com.magicbroom.examplemod.chunk.BroomChunkTicketManager;
+import com.magicbroom.examplemod.util.LoggerWrapper;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(AshenWitchBroom.MODID)
 public class AshenWitchBroom {
     // Define mod id in a common place for everything to reference
     public static final String MODID = "ashenwitchbroom";
-    // Directly reference a slf4j logger
+    // 原始Logger实例
     public static final Logger LOGGER = LogUtils.getLogger();
+    // 包装后的Logger实例，用于控制日志输出
+    public static final LoggerWrapper WRAPPED_LOGGER = new LoggerWrapper(LOGGER);
     // Create a Deferred Register to hold Blocks which will all be registered under the "ashenwitchbroom" namespace
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
     // Create a Deferred Register to hold Items which will all be registered under the "ashenwitchbroom" namespace
@@ -133,8 +139,8 @@ public class AshenWitchBroom {
     public static final DeferredHolder<EntityType<?>, EntityType<MajoBroomEntity>> MAJO_BROOM_ENTITY = ENTITY_TYPES.register("majo_broom", 
             () -> EntityType.Builder.<MajoBroomEntity>of(MajoBroomEntity::new, MobCategory.MISC)
                 .sized(1.0F, 0.5F)
-                .clientTrackingRange(8)
-                .updateInterval(20)
+                .clientTrackingRange(192)
+                .updateInterval(1)
                 .build("majo_broom"));
 
     // Creates a creative tab with the id "ashenwitchbroom:example_tab" for the mod items, that is placed after the combat tab
@@ -179,7 +185,7 @@ public class AshenWitchBroom {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         // Some common setup code
-        LOGGER.info("HELLO FROM COMMON SETUP");
+        LOGGER.debug("通用设置初始化完成");
     }
 
     // Add items to creative tabs
@@ -191,10 +197,24 @@ public class AshenWitchBroom {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
-        LOGGER.info("HELLO from server starting");
+        LOGGER.debug("服务器启动中");
+        
+        // Initialize chunk persistence system
+        BroomChunkTicketManager.getInstance().setServer(event.getServer());
+        LOGGER.debug("区块持久化系统已初始化");
         
         // Register broom commands
         BroomCommand.register(event.getServer().getCommands().getDispatcher());
-        LOGGER.info("Broom commands registered");
+        LOGGER.debug("扫帚指令已注册");
+    }
+
+    @SubscribeEvent
+    public void onServerStopping(ServerStoppingEvent event) {
+        // Save chunk data and shutdown gracefully
+        LOGGER.debug("服务器停止中，保存区块数据");
+        ChunkLoadingManager.getInstance().clearAllLoadedChunks();
+        // BroomChunkTicketManager 会在 shutdown() 中自动保存数据，不再清空
+        BroomChunkTicketManager.getInstance().shutdown();
+        LOGGER.debug("区块数据已保存，管理器已关闭");
     }
 }

@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,6 +17,7 @@ import java.io.IOException;
 
 import com.magicbroom.examplemod.core.AshenWitchBroom;
 import com.magicbroom.examplemod.entity.MajoBroomEntity;
+import com.magicbroom.examplemod.chunk.ChunkLoadingManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -77,7 +79,7 @@ public class BroomDataManager {
                     brooms.add(broomData);
                 }
             } catch (IOException e) {
-                AshenWitchBroom.LOGGER.error("Failed to load broom data for player {}: {}", playerUUID, e.getMessage());
+                AshenWitchBroom.WRAPPED_LOGGER.error("加载玩家 {} 的扫帚数据失败：{}", playerUUID, e.getMessage());
             }
             
             return brooms;
@@ -106,7 +108,7 @@ public class BroomDataManager {
                 rootTag.put("brooms", broomsList);
                 NbtIo.writeCompressed(rootTag, broomFile.toPath());
             } catch (IOException e) {
-                AshenWitchBroom.LOGGER.error("Failed to save broom data for player {}: {}", playerUUID, e.getMessage());
+                AshenWitchBroom.WRAPPED_LOGGER.error("保存玩家 {} 的扫帚数据失败：{}", playerUUID, e.getMessage());
             }
         } finally {
             lock.writeLock().unlock();
@@ -124,8 +126,8 @@ public class BroomDataManager {
         brooms.add(new BroomData(broomName, dimension, position, entityUUID));
         savePlayerBrooms(level, playerUUID, brooms);
         
-        AshenWitchBroom.LOGGER.info("Added broom '{}' for player {} at {} in {} with entityUUID {}", 
-            broomName, playerUUID, position, dimension.location(), entityUUID);
+        AshenWitchBroom.WRAPPED_LOGGER.debug("为玩家 {} 添加扫帚 '{}' 在位置 {} 维度 {} (实体UUID: {})",
+                playerUUID, broomName, position, dimension.location(), entityUUID);
     }
     
     /**
@@ -137,7 +139,7 @@ public class BroomDataManager {
         
         if (removed) {
             savePlayerBrooms(level, playerUUID, brooms);
-            AshenWitchBroom.LOGGER.info("Removed broom '{}' for player {}", broomName, playerUUID);
+            AshenWitchBroom.WRAPPED_LOGGER.debug("为玩家 {} 移除扫帚 '{}'", playerUUID, broomName);
         }
         
         return removed;
@@ -161,8 +163,8 @@ public class BroomDataManager {
                 }
                 savePlayerBrooms(level, playerUUID, brooms);
                 
-                AshenWitchBroom.LOGGER.info("Updated broom '{}' for player {} to {} in {} with entityUUID {}", 
-                    broomName, playerUUID, newPosition, newDimension.location(), newEntityUUID);
+                // AshenWitchBroom.WRAPPED_LOGGER.debug("为玩家 {} 更新扫帚 '{}' 到位置 {} 维度 {} (实体UUID: {})", 
+                //     playerUUID, broomName, newPosition, newDimension.location(), newEntityUUID);
                 return true;
             }
         }
@@ -211,23 +213,23 @@ public class BroomDataManager {
     public static boolean validateBroomEntityUUID(ServerLevel level, UUID playerUUID, String broomName, UUID expectedEntityUUID) {
         BroomData broom = findBroom(level, playerUUID, broomName);
         if (broom == null) {
-            AshenWitchBroom.LOGGER.debug("Broom '{}' not found for player {}", broomName, playerUUID);
-            return false;
-        }
-        
-        UUID storedUUID = broom.getEntityUUID();
-        if (storedUUID == null) {
-            AshenWitchBroom.LOGGER.warn("Broom '{}' has no entityUUID, removing invalid data for player {}", broomName, playerUUID);
-            removeBroom(level, playerUUID, broomName);
-            return false;
-        }
-        
-        if (!storedUUID.equals(expectedEntityUUID)) {
-            AshenWitchBroom.LOGGER.warn("Broom '{}' entity UUID mismatch for player {}. Expected: {}, Stored: {}. Removing stale data.", 
-                broomName, playerUUID, expectedEntityUUID, storedUUID);
-            removeBroom(level, playerUUID, broomName);
-            return false;
-        }
+             AshenWitchBroom.WRAPPED_LOGGER.debug("玩家 {} 的扫帚 '{}' 未找到", playerUUID, broomName);
+             return false;
+         }
+         
+         UUID storedUUID = broom.getEntityUUID();
+         if (storedUUID == null) {
+             AshenWitchBroom.WRAPPED_LOGGER.warn("扫帚 '{}' 没有实体UUID，为玩家 {} 移除无效数据", broomName, playerUUID);
+             removeBroom(level, playerUUID, broomName);
+             return false;
+         }
+         
+         if (!storedUUID.equals(expectedEntityUUID)) {
+             AshenWitchBroom.WRAPPED_LOGGER.warn("玩家 {} 的扫帚 '{}' 实体UUID不匹配。期望：{}，存储：{}。移除过期数据。",
+                 playerUUID, broomName, expectedEntityUUID, storedUUID);
+             removeBroom(level, playerUUID, broomName);
+             return false;
+         }
         
         return true;
     }
@@ -242,73 +244,87 @@ public class BroomDataManager {
         ReentrantReadWriteLock lock = getPlayerLock(playerUUID);
         
         // 检查是否有写操作正在进行，如果有则直接返回false，避免数据不一致
-        if (lock.isWriteLocked()) {
-            AshenWitchBroom.LOGGER.debug("Skipping broom verification for player {} during write operation", playerUUID);
-            return CompletableFuture.completedFuture(false);
-        }
+         if (lock.isWriteLocked()) {
+             AshenWitchBroom.WRAPPED_LOGGER.debug("跳过玩家 {} 的扫帚验证（写入操作进行中）", playerUUID);
+             return CompletableFuture.completedFuture(false);
+         }
+         
+         BroomData broomData = findBroom((ServerLevel) player.level(), playerUUID, broomName);
+         if (broomData == null) {
+             AshenWitchBroom.WRAPPED_LOGGER.debug("玩家 {} 的扫帚 '{}' 在数据中未找到", playerUUID, broomName);
+             return CompletableFuture.completedFuture(false);
+         }
+         
+         // 必须有entityUUID才能验证
+         UUID targetEntityUUID = broomData.getEntityUUID();
+         if (targetEntityUUID == null) {
+             AshenWitchBroom.WRAPPED_LOGGER.warn("扫帚 '{}' 没有实体UUID，为玩家 {} 移除无效数据", broomName, playerUUID);
+             // 删除无效的旧数据
+             removeBroom((ServerLevel) player.level(), playerUUID, broomName);
+             return CompletableFuture.completedFuture(false);
+         }
+         
+         // 获取目标维度的服务端世界
+         ServerLevel targetLevel = player.getServer().getLevel(broomData.getDimension());
+         if (targetLevel == null) {
+             AshenWitchBroom.WRAPPED_LOGGER.warn("扫帚 '{}' 的目标维度 {} 未找到", broomName, broomData.getDimension().location());
+             return CompletableFuture.completedFuture(false);
+         }
         
-        BroomData broomData = findBroom((ServerLevel) player.level(), playerUUID, broomName);
-        if (broomData == null) {
-            AshenWitchBroom.LOGGER.debug("Broom '{}' not found in data for player {}", broomName, playerUUID);
-            return CompletableFuture.completedFuture(false);
-        }
+        // 使用异步区块加载等待机制
+        CompletableFuture<Boolean> result = new CompletableFuture<>();
         
-        // 必须有entityUUID才能验证
-        UUID targetEntityUUID = broomData.getEntityUUID();
-        if (targetEntityUUID == null) {
-            AshenWitchBroom.LOGGER.warn("Broom '{}' has no entityUUID, removing invalid data for player {}", broomName, playerUUID);
-            // 删除无效的旧数据
-            removeBroom((ServerLevel) player.level(), playerUUID, broomName);
-            return CompletableFuture.completedFuture(false);
-        }
+        // 获取扫帚位置和区块坐标
+        BlockPos broomPos = broomData.getPosition();
+        ChunkPos broomChunk = new ChunkPos(broomPos);
         
-        // 获取目标维度的服务端世界
-        ServerLevel targetLevel = player.getServer().getLevel(broomData.getDimension());
-        if (targetLevel == null) {
-            AshenWitchBroom.LOGGER.warn("Target dimension {} not found for broom '{}'", broomData.getDimension().location(), broomName);
-            return CompletableFuture.completedFuture(false);
-        }
+        // 记录坐标转换日志
+                AshenWitchBroom.WRAPPED_LOGGER.debug("BroomDataManager - 扫帚检测坐标转换: 原始坐标 BlockPos({}, {}, {}) -> 区块坐标 ChunkPos({}, {})",
+                    broomPos.getX(), broomPos.getY(), broomPos.getZ(), broomChunk.x, broomChunk.z);
         
-        return CompletableFuture.supplyAsync(() -> {
-            // 使用坐标加载相关区块（确保实体已加载）
-            BlockPos broomPos = broomData.getPosition();
-            ChunkPos centerChunk = new ChunkPos(broomPos);
-            
-            // 强制加载周围9个区块 (3x3区域)
-            List<ChunkPos> chunksToLoad = new ArrayList<>();
-            for (int x = -1; x <= 1; x++) {
-                for (int z = -1; z <= 1; z++) {
-                    chunksToLoad.add(new ChunkPos(centerChunk.x + x, centerChunk.z + z));
+        // 异步加载区块并等待加载完成
+        ChunkLoadingManager.getInstance().addWeakLoadedChunkAsync(targetLevel, broomChunk.x, broomChunk.z, 
+            (chunkLoaded) -> {
+                try {
+                    if (chunkLoaded) {
+                        AshenWitchBroom.WRAPPED_LOGGER.debug("BroomDataManager - 区块 ({}, {}) 加载完成，开始验证扫帚 '{}' 在维度 {}", 
+                            broomChunk.x, broomChunk.z, broomName, targetLevel.dimension().location());
+                        
+                        // 区块加载完成后，验证实体存在性
+                        Entity targetEntity = targetLevel.getEntity(targetEntityUUID);
+                        if (targetEntity instanceof MajoBroomEntity broomEntity) {
+                            // 验证扫帚名称和拥有者匹配
+                            if (broomData.getBroomName().equals(broomEntity.getBroomName()) && 
+                                playerUUID.equals(broomEntity.getOwnerUUID())) {
+                                AshenWitchBroom.WRAPPED_LOGGER.debug("玩家 {} 的扫帚 '{}' 已通过UUID {} 验证",
+                            playerUUID, broomName, targetEntityUUID);
+                                result.complete(true);
+                            } else {
+                                AshenWitchBroom.WRAPPED_LOGGER.warn("找到扫帚实体UUID {} 但名称/拥有者不匹配。期望：{}/{}，实际：{}/{}", 
+                                    targetEntityUUID, broomData.getBroomName(), playerUUID, 
+                                    broomEntity.getBroomName(), broomEntity.getOwnerUUID());
+                                result.complete(false);
+                            }
+                        } else {
+                            AshenWitchBroom.WRAPPED_LOGGER.debug("区块加载后未找到UUID为 {} 的扫帚实体，移除过期数据", targetEntityUUID);
+                            // 实体不存在，删除过期数据
+                            removeBroom(targetLevel, playerUUID, broomName);
+                            result.complete(false);
+                        }
+                    } else {
+                        AshenWitchBroom.WRAPPED_LOGGER.error("BroomDataManager - 区块 ({}, {}) 加载失败或超时，无法验证扫帚 '{}'", 
+                            broomChunk.x, broomChunk.z, broomName);
+                        result.complete(false);
+                    }
+                } finally {
+                    // 验证完成后立即清理加载的区块
+                    ChunkLoadingManager.getInstance().removeWeakLoadedChunk(targetLevel, broomChunk.x, broomChunk.z);
+                    AshenWitchBroom.WRAPPED_LOGGER.debug("BroomDataManager - 已清理验证用的弱加载区块 ({}, {}) 在维度 {}", 
+                        broomChunk.x, broomChunk.z, targetLevel.dimension().location());
                 }
-            }
-            
-            // 同步加载区块
-            for (ChunkPos chunkPos : chunksToLoad) {
-                targetLevel.getChunk(chunkPos.x, chunkPos.z);
-            }
-            
-            // 仅使用UUID验证实体存在性
-            Entity targetEntity = targetLevel.getEntity(targetEntityUUID);
-            if (targetEntity instanceof MajoBroomEntity broomEntity) {
-                // 验证扫帚名称和拥有者匹配
-                if (broomData.getBroomName().equals(broomEntity.getBroomName()) && 
-                    playerUUID.equals(broomEntity.getOwnerUUID())) {
-                    AshenWitchBroom.LOGGER.debug("Broom '{}' verified by UUID {} for player {}", 
-                        broomName, targetEntityUUID, playerUUID);
-                    return true;
-                } else {
-                    AshenWitchBroom.LOGGER.warn("Broom entity UUID {} found but name/owner mismatch. Expected: {}/{}, Found: {}/{}", 
-                        targetEntityUUID, broomData.getBroomName(), playerUUID, 
-                        broomEntity.getBroomName(), broomEntity.getOwnerUUID());
-                    return false;
-                }
-            } else {
-                AshenWitchBroom.LOGGER.debug("Broom entity with UUID {} not found after chunk loading, removing stale data", targetEntityUUID);
-                // 实体不存在，删除过期数据
-                removeBroom(targetLevel, playerUUID, broomName);
-                return false;
-            }
-        });
+            }, 15); // 15秒超时
+        
+        return result;
     }
     
     /**
@@ -317,7 +333,7 @@ public class BroomDataManager {
     public static String generateUniqueBroomName(ServerLevel level, UUID playerUUID) {
         List<BroomData> existingBrooms = loadPlayerBrooms(level, playerUUID);
         int counter = 1;
-        String baseName = "扫帚";
+        String baseName = Component.translatable("broom.ashenwitchbroom.default_name").getString();
         String broomName = baseName + counter;
         
         // 确保名称唯一
@@ -328,6 +344,36 @@ public class BroomDataManager {
             if (nameExists) {
                 counter++;
                 broomName = baseName + counter;
+            }
+        }
+        
+        return broomName;
+    }
+    
+    /**
+     * 基于现有名称生成唯一的扫帚名称（重载版本）
+     */
+    public static String generateUniqueBroomName(ServerLevel level, UUID playerUUID, String baseName) {
+        List<BroomData> existingBrooms = loadPlayerBrooms(level, playerUUID);
+        
+        // 首先检查原名称是否已存在
+        boolean nameExists = existingBrooms.stream().anyMatch(broom -> broom.getBroomName().equals(baseName));
+        if (!nameExists) {
+            return baseName; // 原名称不存在冲突，直接返回
+        }
+        
+        // 如果存在冲突，添加数字后缀
+        int counter = 2;
+        String broomName = baseName + "_" + counter;
+        
+        // 确保名称唯一
+        nameExists = true;
+        while (nameExists) {
+            final String currentName = broomName;
+            nameExists = existingBrooms.stream().anyMatch(broom -> broom.getBroomName().equals(currentName));
+            if (nameExists) {
+                counter++;
+                broomName = baseName + "_" + counter;
             }
         }
         

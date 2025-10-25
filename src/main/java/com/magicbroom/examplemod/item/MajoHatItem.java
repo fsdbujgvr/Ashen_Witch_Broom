@@ -18,6 +18,7 @@ public class MajoHatItem extends ArmorItem {
     }
     
     @Override
+    @SuppressWarnings("removal")
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new MajoHatArmorRenderer());
     }

@@ -62,8 +62,8 @@ public class MajoBroomItem extends Item {
                 player.sendSystemMessage(net.minecraft.network.chat.Component.translatable(
                     "message.ashenwitchbroom.broom_placed", broomName));
                 
-                AshenWitchBroom.LOGGER.info("Player {} placed broom '{}' at {} in {}", 
-                    player.getName().getString(), broomName, broomPos, level.dimension().location());
+                AshenWitchBroom.WRAPPED_LOGGER.debug("玩家 {} 在位置 ({}, {}, {}) 召唤扫帚 '{}'",
+                player.getName().getString(), level.dimension().location(), pos, broomName);
             }
             
             // 消耗物品

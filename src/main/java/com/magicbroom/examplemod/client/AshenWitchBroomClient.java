@@ -19,8 +19,7 @@ import com.magicbroom.examplemod.render.MajoBroomEntityRenderer;
 import com.magicbroom.examplemod.model.MajoBroomModel;
 import com.magicbroom.examplemod.model.MajoHatModel;
 import com.magicbroom.examplemod.model.MajoClothModel;
-import com.magicbroom.examplemod.network.Networking;
-import com.magicbroom.examplemod.network.RidePack;
+
 import com.magicbroom.examplemod.network.SummonBroomPack;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -56,8 +55,8 @@ public class AshenWitchBroomClient {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         // Some client setup code
-        AshenWitchBroom.LOGGER.info("HELLO FROM CLIENT SETUP");
-        AshenWitchBroom.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+        AshenWitchBroom.WRAPPED_LOGGER.debug("客户端设置初始化完成");
+        AshenWitchBroom.WRAPPED_LOGGER.debug("Minecraft 用户名 >> {}", Minecraft.getInstance().getUser().getName());
     }
     
     @SubscribeEvent
@@ -95,8 +94,4 @@ public class AshenWitchBroomClient {
     /**
      * 发送骑乘控制的网络包到服务端
      */
-    public static void sendRidePacket(int entityId, boolean ride) {
-        PacketDistributor.sendToServer(new RidePack(entityId, ride));
-    }
-
 }

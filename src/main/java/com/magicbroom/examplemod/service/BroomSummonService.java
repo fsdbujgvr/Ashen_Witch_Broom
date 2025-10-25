@@ -15,6 +15,7 @@ import com.magicbroom.examplemod.core.Config;
 import com.magicbroom.examplemod.entity.MajoBroomEntity;
 import com.magicbroom.examplemod.data.BroomDataManager;
 import com.magicbroom.examplemod.data.BroomData;
+import com.magicbroom.examplemod.chunk.ChunkLoadingManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -42,7 +43,7 @@ public class BroomSummonService {
         
         // 尝试获取锁，如果无法立即获取则直接返回（防止疯狂按键）
         if (!playerLock.tryLock()) {
-            AshenWitchBroom.LOGGER.debug("Player {} summon request ignored - previous operation still in progress", playerUUID);
+            AshenWitchBroom.WRAPPED_LOGGER.debug("玩家 {} 的召唤请求被忽略 - 上一个操作仍在进行中", playerUUID);
             return;
         }
         
@@ -86,13 +87,13 @@ public class BroomSummonService {
             }).exceptionally(throwable -> {
                 // 异常情况下也要释放锁
                 level.getServer().execute(() -> playerLock.unlock());
-                AshenWitchBroom.LOGGER.error("Error during broom summon for player {}: {}", playerUUID, throwable.getMessage());
+                AshenWitchBroom.WRAPPED_LOGGER.error("玩家 {} 召唤扫帚时发生错误：{}", playerUUID, throwable.getMessage());
                 return null;
             });
         } catch (Exception e) {
             // 如果在try块中发生异常，也要释放锁
             playerLock.unlock();
-            AshenWitchBroom.LOGGER.error("Error in summonBroom for player {}: {}", playerUUID, e.getMessage());
+            AshenWitchBroom.WRAPPED_LOGGER.error("玩家 {} 的summonBroom方法发生错误：{}", playerUUID, e.getMessage());
             throw e;
         }
     }
@@ -237,8 +238,8 @@ public class BroomSummonService {
                 // 添加新的数据记录，包含实体UUID
                 BroomDataManager.addBroom(level, player.getUUID(), broomName, playerDimension, playerPos, newBroom.getUUID());
                 
-                AshenWitchBroom.LOGGER.info("Cross-dimension summon: broom '{}' moved from {} to {} for player {}", 
-                    broomName, broomData.getDimension().location(), playerDimension.location(), player.getUUID());
+                AshenWitchBroom.WRAPPED_LOGGER.debug("跨维度召唤：玩家 {} 的扫帚 '{}' 从 {} 移动到 {}",
+                    player.getUUID(), broomName, broomData.getDimension().location(), playerDimension.location());
             } else {
                 // 同维度召唤：直接更新位置
                 MajoBroomEntity newBroom = new MajoBroomEntity(AshenWitchBroom.MAJO_BROOM_ENTITY.get(), level);
@@ -265,7 +266,7 @@ public class BroomSummonService {
     }
     
     /**
-     * 删除原位置的扫帚实体（仅使用UUID精确匹配）
+     * 删除原位置的扫帚实体（仅使用UUID精确匹配）- 使用异步区块加载
      * 坐标仅用于加载区块，删除完全基于UUID
      */
     private static void removeOldBroomEntity(ServerPlayer player, BroomData broomData) {
@@ -274,44 +275,54 @@ public class BroomSummonService {
         
         UUID targetEntityUUID = broomData.getEntityUUID();
         if (targetEntityUUID == null) {
-            AshenWitchBroom.LOGGER.warn("Cannot remove broom '{}' - no entityUUID available", broomData.getBroomName());
+            AshenWitchBroom.WRAPPED_LOGGER.warn("无法移除扫帚 '{}' - 没有可用的实体UUID", broomData.getBroomName());
             return;
         }
         
-        // 使用坐标加载相关区块（确保实体已加载）
+        // 使用异步坐标加载相关区块（确保实体已加载）
         BlockPos broomPos = broomData.getPosition();
-        ChunkPos centerChunk = new ChunkPos(broomPos);
+        ChunkPos broomChunk = new ChunkPos(broomPos);
         
-        // 强制加载周围9个区块 (3x3区域)
-        List<ChunkPos> chunksToLoad = new ArrayList<>();
-        for (int x = -1; x <= 1; x++) {
-            for (int z = -1; z <= 1; z++) {
-                chunksToLoad.add(new ChunkPos(centerChunk.x + x, centerChunk.z + z));
-            }
-        }
+        // 记录坐标转换日志
+        AshenWitchBroom.WRAPPED_LOGGER.debug("BroomSummonService - 移除旧扫帚坐标转换: 原始坐标 BlockPos({}, {}, {}) -> 区块坐标 ChunkPos({}, {})", 
+            broomPos.getX(), broomPos.getY(), broomPos.getZ(), broomChunk.x, broomChunk.z);
         
-        // 同步加载区块
-        for (ChunkPos chunkPos : chunksToLoad) {
-            targetLevel.getChunk(chunkPos.x, chunkPos.z);
-        }
-        
-        // 仅使用UUID精确匹配
-        Entity targetEntity = targetLevel.getEntity(targetEntityUUID);
-        if (targetEntity instanceof MajoBroomEntity broomEntity) {
-            // 验证扫帚名称和拥有者匹配
-            if (broomData.getBroomName().equals(broomEntity.getBroomName()) && 
-                player.getUUID().equals(broomEntity.getOwnerUUID())) {
-                targetEntity.discard();
-                AshenWitchBroom.LOGGER.info("Removed broom entity '{}' with UUID {} for player {}", 
-                    broomData.getBroomName(), targetEntityUUID, player.getUUID());
-            } else {
-                AshenWitchBroom.LOGGER.warn("Broom entity UUID {} found but name/owner mismatch. Expected: {}/{}, Found: {}/{}", 
-                    targetEntityUUID, broomData.getBroomName(), player.getUUID(), 
-                    broomEntity.getBroomName(), broomEntity.getOwnerUUID());
-            }
-        } else {
-            AshenWitchBroom.LOGGER.debug("Broom entity with UUID {} not found after chunk loading", targetEntityUUID);
-        }
+        // 异步加载区块并等待完成
+        ChunkLoadingManager.getInstance().addWeakLoadedChunkAsync(targetLevel, broomChunk.x, broomChunk.z, 
+            chunkLoaded -> {
+                try {
+                    if (chunkLoaded) {
+                        AshenWitchBroom.WRAPPED_LOGGER.debug("BroomSummonService - 区块 ({}, {}) 在维度 {} 已成功加载用于移除旧扫帚", 
+                            broomChunk.x, broomChunk.z, targetLevel.dimension().location());
+                        
+                        // 仅使用UUID精确匹配
+                        Entity targetEntity = targetLevel.getEntity(targetEntityUUID);
+                        if (targetEntity instanceof MajoBroomEntity broomEntity) {
+                            // 验证扫帚名称和拥有者匹配
+                            if (broomData.getBroomName().equals(broomEntity.getBroomName()) && 
+                                player.getUUID().equals(broomEntity.getOwnerUUID())) {
+                                targetEntity.discard();
+                                AshenWitchBroom.WRAPPED_LOGGER.debug("已移除玩家 {} 的扫帚实体 '{}' (UUID: {})", 
+                                    player.getUUID(), broomData.getBroomName(), targetEntityUUID);
+                            } else {
+                                AshenWitchBroom.WRAPPED_LOGGER.warn("找到扫帚实体UUID {} 但名称/拥有者不匹配。期望：{}/{}，实际：{}/{}", 
+                                    targetEntityUUID, broomData.getBroomName(), player.getUUID(), 
+                                    broomEntity.getBroomName(), broomEntity.getOwnerUUID());
+                            }
+                        } else {
+                            AshenWitchBroom.WRAPPED_LOGGER.debug("区块加载后未找到UUID为 {} 的扫帚实体", targetEntityUUID);
+                        }
+                    } else {
+                        AshenWitchBroom.WRAPPED_LOGGER.warn("BroomSummonService - 区块 ({}, {}) 在维度 {} 加载超时，无法移除旧扫帚", 
+                            broomChunk.x, broomChunk.z, targetLevel.dimension().location());
+                    }
+                } finally {
+                    // 移除旧扫帚完成后立即清理加载的区块
+                    ChunkLoadingManager.getInstance().removeWeakLoadedChunk(targetLevel, broomChunk.x, broomChunk.z);
+                    AshenWitchBroom.WRAPPED_LOGGER.debug("BroomSummonService - 已清理移除旧扫帚用的弱加载区块 ({}, {}) 在维度 {}", 
+                        broomChunk.x, broomChunk.z, targetLevel.dimension().location());
+                }
+            });
     }
     
     /**

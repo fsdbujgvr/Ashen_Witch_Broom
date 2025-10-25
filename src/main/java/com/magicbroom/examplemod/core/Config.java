@@ -51,7 +51,13 @@ public class Config {
 
     public static final ModConfigSpec.BooleanValue ENABLE_DETAILED_INFO = BUILDER
             .comment("是否启用详细信息显示")
-            .define("enableDetailedInfo", true);
+            .define("enableDetailedInfo", false);
+
+    // 日志配置
+    public static final ModConfigSpec.BooleanValue ENABLE_DEBUG_LOGS = BUILDER
+            .comment("是否启用调试日志 (默认关闭，info级别日志始终输出)")
+            .translation("ashenwitchbroom.config.enable_debug_logs")
+            .define("enableDebugLogs", false);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 

@@ -42,12 +42,18 @@ public class BroomData {
             tag.getInt("z")
         );
         
-        ResourceKey<Level> dimension = Level.OVERWORLD; // 默认主世界
-        if ("minecraft:the_nether".equals(dimensionStr)) {
-            dimension = Level.NETHER;
-        } else if ("minecraft:the_end".equals(dimensionStr)) {
-            dimension = Level.END;
-        } else if ("minecraft:overworld".equals(dimensionStr)) {
+        // 正确处理所有维度，包括第三方模组维度
+        ResourceKey<Level> dimension;
+        try {
+            // 使用ResourceLocation解析维度字符串，支持所有维度
+            net.minecraft.resources.ResourceLocation dimensionLocation = 
+                net.minecraft.resources.ResourceLocation.parse(dimensionStr);
+            dimension = ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION, dimensionLocation);
+            
+            // AshenWitchBroom.WRAPPED_LOGGER.debug("成功解析维度：{} -> {}", dimensionStr, dimension.location());
+        } catch (Exception e) {
+            // 如果解析失败，记录警告并使用主世界作为默认值
+            AshenWitchBroom.WRAPPED_LOGGER.warn("解析维度 '{}' 失败，默认使用主世界：{}", dimensionStr, e.getMessage());
             dimension = Level.OVERWORLD;
         }
         
@@ -57,12 +63,12 @@ public class BroomData {
             try {
                 entityUUID = UUID.fromString(tag.getString("entityUUID"));
             } catch (IllegalArgumentException e) {
-                AshenWitchBroom.LOGGER.warn("Invalid entityUUID in broom data: {}", tag.getString("entityUUID"));
+                AshenWitchBroom.WRAPPED_LOGGER.warn("扫帚数据中的实体UUID无效：{}", tag.getString("entityUUID"));
             }
         }
         
         if (entityUUID == null) {
-            AshenWitchBroom.LOGGER.warn("Broom data missing required entityUUID, this data will be invalid");
+            AshenWitchBroom.WRAPPED_LOGGER.warn("扫帚数据缺少必需的实体UUID，此数据将无效");
         }
         
         return new BroomData(broomName, dimension, position, entityUUID);
