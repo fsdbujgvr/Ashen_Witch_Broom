@@ -53,7 +53,7 @@
 | `/broom cleanup [player]` | 扫帚清理命令，批量验证并清理无效的扫帚记录 | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761376954399_broom_cleanup_zh.png" width="100%"> |
 | `/broom help` | 帮助命令 | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761376967375_broom_help_zh.png" width="100%"> |
 
-\###区块加载指令说明：`/broom chunks add lazy x y w h`
+\###区块加载指令说明：`/broom chunks add <lazy|ticking>  <x> <z> [width] [height]`
 
 `x，y`为区块坐标，和大地坐标不相同。区块坐标为【传统认为的坐标÷16】。`x，y`为必填。`w，h`为选填，如果不填写默认指定`x，y`的单个区块。
 
@@ -153,13 +153,13 @@ The mod provides commands for managing your broom and for force-loading chunks.
 `player` is the target player. If omitted, it defaults to yourself. Targeting other players requires OP permissions.
 
 | Command | Function | Example |
-|:---:|:---:|:---:|
+| :---:| :---:| :---:|
 | `/broom detect [player]` | Broom detection command. Displays detailed information about all stored brooms. | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761395498753_broom_detect_en.png" width="100%"> |
 | `/broom stats [player]` | Broom statistics command. Shows broom usage stats. | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761395515342_broom_stats_en.png" width="100%"> |
 | `/broom cleanup [player]` | Broom cleanup command. Batch validates and removes invalid broom records. | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761395539866_broom_cleanup_en.png" width="100%"> |
 | `/broom help` | Displays the help menu. | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761395552581_broom_help_en.png" width="100%"> |
 
-### Chunk Loading Command Usage: `/broom chunks add lazy <x> <z> [width] [height]`
+### Chunk Loading Command Usage: `/broom chunks add <lazy|ticking> <x> <z> [width] [height]`
 
 `x` and `z` are the chunk coordinates (not block coordinates, which are `block_coordinate ÷ 16`). `x` and `z` are required. `w` (width) and `h` (height) are optional; if omitted, only the single chunk at `x, z` will be targeted.
 
