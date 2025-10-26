@@ -53,7 +53,7 @@
 | `/broom cleanup [player]` | 扫帚清理命令，批量验证并清理无效的扫帚记录 | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761376954399_broom_cleanup_zh.png" width="100%"> |
 | `/broom help` | 帮助命令 | <img src="https://cloudflare-imgbed-1t7.pages.dev/file/1761376967375_broom_help_zh.png" width="100%"> |
 
-\###区块加载指令说明：`/broom chunks add <lazy|ticking>  <x> <z> [width] [height]`
+\###区块加载指令说明：`/broom chunks add <lazy|ticking> <x> <z> [width] [height]`
 
 `x，y`为区块坐标，和大地坐标不相同。区块坐标为【传统认为的坐标÷16】。`x，y`为必填。`w，h`为选填，如果不填写默认指定`x，y`的单个区块。
 
